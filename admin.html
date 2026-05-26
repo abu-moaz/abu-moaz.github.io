@@ -1,35 +1,46 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التاجر - بقالة ابو معاذ الشرعبي</title>
-    
+
     <!-- استدعاء خط Cairo الاحترافي من Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
     <!-- استدعاء مكتبة Supabase JS Client عبر CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <!-- استدعاء مكتبة أيقونات Lucide الرائعة عبر CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         /* التنسيقات العامة ومتغيرات التصميم - ثيم زجاجي داكن فاخر */
         :root {
-            --bg-main: #0b0f19;       /* لون الخلفية الأساسي */
-            --bg-card: rgba(19, 27, 46, 0.65); /* بطاقات زجاجية شبه شفافة */
-            --bg-accent: rgba(30, 41, 59, 0.8); /* عناصر تفاعلية */
-            --bg-hover: rgba(51, 65, 85, 0.85); /* تأثير الحوم */
-            --primary: #10b981;       /* الزمردي النشط للمؤشرات الإيجابية والتسديد */
+            --bg-main: #0b0f19;
+            /* لون الخلفية الأساسي */
+            --bg-card: rgba(19, 27, 46, 0.65);
+            /* بطاقات زجاجية شبه شفافة */
+            --bg-accent: rgba(30, 41, 59, 0.8);
+            /* عناصر تفاعلية */
+            --bg-hover: rgba(51, 65, 85, 0.85);
+            /* تأثير الحوم */
+            --primary: #10b981;
+            /* الزمردي النشط للمؤشرات الإيجابية والتسديد */
             --primary-gradient: linear-gradient(135deg, #10b981, #059669);
-            --danger: #f43f5e;        /* الوردي الناري للديون والتنبيهات والحذف */
+            --danger: #f43f5e;
+            /* الوردي الناري للديون والتنبيهات والحذف */
             --danger-gradient: linear-gradient(135deg, #f43f5e, #e11d48);
-            --text-main: #f8fafc;     /* لون النصوص الأساسي */
-            --text-muted: #94a3b8;    /* لون النصوص الثانوية */
-            --border-color: rgba(255, 255, 255, 0.08); /* لون الحدود الزجاجية */
+            --text-main: #f8fafc;
+            /* لون النصوص الأساسي */
+            --text-muted: #94a3b8;
+            /* لون النصوص الثانوية */
+            --border-color: rgba(255, 255, 255, 0.08);
+            /* لون الحدود الزجاجية */
             --glass-effect: blur(20px) saturate(180%);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
             --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.25);
@@ -59,13 +70,16 @@
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: var(--bg-main);
         }
+
         ::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: 4px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: var(--text-muted);
         }
@@ -129,8 +143,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         /* شريط التنقل العلوي للتاجر */
@@ -143,7 +162,8 @@
             top: 0;
             z-index: 100;
             box-shadow: var(--shadow-md);
-            display: none; /* يتم إظهاره فقط بعد المصادقة */
+            display: none;
+            /* يتم إظهاره فقط بعد المصادقة */
         }
 
         .nav-container {
@@ -231,7 +251,8 @@
             margin: 1.5rem auto 0 auto;
             padding: 0 1.2rem;
             flex-grow: 1;
-            display: none; /* يتم إظهاره فقط بعد المصادقة */
+            display: none;
+            /* يتم إظهاره فقط بعد المصادقة */
         }
 
         /* الكروت والوحدات الأساسية الزجاجية */
@@ -575,6 +596,7 @@
             .transaction-row-top {
                 flex-direction: column;
             }
+
             .transaction-row-top select {
                 width: 100%;
             }
@@ -776,7 +798,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* نظام الإشعارات البسيط */
@@ -811,8 +835,15 @@
         }
 
         @keyframes slideIn {
-            from { transform: translateX(-110%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(-110%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .toast.error {
@@ -982,6 +1013,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- شاشة حظر الاتصال عند انقطاع الإنترنت أو فشل السيرفر -->
@@ -991,8 +1023,10 @@
                 <i data-lucide="wifi-off" style="width: 40px; height: 40px;"></i>
             </div>
             <h2>فشل الاتصال بقاعدة البيانات السحابية</h2>
-            <p>تتطلب لوحة الإدارة اتصالاً سحابياً مباشراً وآمناً بـ Supabase للعمل بشكل سليم وحماية البيانات. تم قفل الصفحة مؤقتاً لعدم وجود اتصال نشط بالإنترنت أو تعذر الربط بقاعدة البيانات.</p>
-            <button class="btn btn-primary" onclick="retryConnection()" style="margin: 0 auto; display: flex; gap: 0.5rem; align-items: center; padding: 0.75rem 1.5rem; font-size: 0.95rem;">
+            <p>تتطلب لوحة الإدارة اتصالاً سحابياً مباشراً وآمناً بـ Supabase للعمل بشكل سليم وحماية البيانات. تم قفل
+                الصفحة مؤقتاً لعدم وجود اتصال نشط بالإنترنت أو تعذر الربط بقاعدة البيانات.</p>
+            <button class="btn btn-primary" onclick="retryConnection()"
+                style="margin: 0 auto; display: flex; gap: 0.5rem; align-items: center; padding: 0.75rem 1.5rem; font-size: 0.95rem;">
                 <i data-lucide="refresh-cw"></i>
                 إعادة محاولة الاتصال الفوري 🌐
             </button>
@@ -1006,15 +1040,19 @@
                 <i data-lucide="shield-alert"></i>
             </div>
             <h2 class="lock-title">لوحة تحكم التاجر مقفلة</h2>
-            <p class="lock-subtitle">الرجاء إدخال رمز المرور السري (PIN) المسجل في قاعدة البيانات للوصول إلى لوحة المبيعات والعمليات والجرد</p>
-            
+            <p class="lock-subtitle">الرجاء إدخال رمز المرور السري (PIN) المسجل في قاعدة البيانات للوصول إلى لوحة
+                المبيعات والعمليات والجرد</p>
+
             <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
-                <input type="password" id="admin-pin-input" class="form-control" placeholder="أدخل رمز المرور السري..." style="text-align: center; font-size: 1.2rem; letter-spacing: 0.2rem;" onkeydown="checkAdminPinEnter(event)">
+                <input type="password" id="admin-pin-input" class="form-control" placeholder="أدخل رمز المرور السري..."
+                    style="text-align: center; font-size: 1.2rem; letter-spacing: 0.2rem;"
+                    onkeydown="checkAdminPinEnter(event)">
                 <button class="btn btn-primary" onclick="verifyAdminPin()"><i data-lucide="unlock"></i> دخول</button>
             </div>
 
             <div style="border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
-                <a href="index.html" class="btn btn-secondary" style="font-size: 0.85rem; width: 100%;"><i data-lucide="users"></i> الذهاب لبوابة العملاء العامة 👥</a>
+                <a href="index.html" class="btn btn-secondary" style="font-size: 0.85rem; width: 100%;"><i
+                        data-lucide="users"></i> الذهاب لبوابة العملاء العامة 👥</a>
             </div>
         </div>
     </div>
@@ -1027,24 +1065,26 @@
                     <i data-lucide="scale" style="stroke-width: 2.5px;"></i>
                 </div>
                 <div class="logo-text">
-                    <h1>بقالة ابو معاذ الشرعبي (لوحة التاجر)</h1>
+                    <h1>منظومة ديون البقالة (لوحة التاجر)</h1>
                     <span>الإدارة والعمليات السحابية المتكاملة في صفحة واحدة</span>
                 </div>
             </div>
-            
+
             <div class="nav-controls">
                 <span id="db-status-badge" class="status-badge status-online">
                     متصل سحابياً 🌐
                 </span>
-                <a href="index.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.82rem;"><i data-lucide="users"></i> بوابة العملاء العامة</a>
-                <button class="btn btn-danger" onclick="logoutMerchant()" style="padding: 0.5rem 1rem; font-size: 0.82rem;"><i data-lucide="lock"></i> قفل اللوحة</button>
+                <a href="index.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.82rem;"><i
+                        data-lucide="users"></i> بوابة العملاء العامة</a>
+                <button class="btn btn-danger" onclick="logoutMerchant()"
+                    style="padding: 0.5rem 1rem; font-size: 0.82rem;"><i data-lucide="lock"></i> قفل اللوحة</button>
             </div>
         </div>
     </header>
 
     <!-- المحتوى الرئيسي للمنظومة (يظهر بعد فك القفل) -->
     <main id="admin-main-content">
-        
+
         <!-- لوحة إحصائيات سريعة للديون والعملاء -->
         <div class="stats-row">
             <div class="stat-card debt-stat">
@@ -1072,7 +1112,7 @@
 
         <!-- تخطيط مساحة العمل المدمجة -->
         <div class="workspace-grid">
-            
+
             <!-- العمود الأيمن: كشف الجرد والديون العام لكافة العملاء -->
             <div class="card" id="admin-table-card">
                 <div class="loading-overlay" id="admin-table-loading">
@@ -1080,14 +1120,19 @@
                     <span>جاري تحديث البيانات...</span>
                 </div>
 
-                <div class="card-title" style="justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem;">
+                <div class="card-title"
+                    style="justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem;">
                     <span style="display: flex; align-items: center; gap: 0.4rem;">
                         <i data-lucide="clipboard-list"></i>
                         كشف الحساب والديون العام للعملاء
                     </span>
                     <div style="display: flex; gap: 0.4rem; align-items: center;">
-                        <input type="text" id="search-general-customers" class="form-control" style="width: 200px; padding: 0.45rem 0.8rem; font-size: 0.85rem;" placeholder="ابحث بالاسم أو الرقم..." oninput="filterGeneralTable()">
-                        <button class="btn btn-secondary" onclick="printGeneralLedger()" style="padding: 0.45rem 0.8rem; font-size: 0.85rem;" title="طباعة كشف الديون العام"><i data-lucide="printer"></i> طباعة الكشف</button>
+                        <input type="text" id="search-general-customers" class="form-control"
+                            style="width: 200px; padding: 0.45rem 0.8rem; font-size: 0.85rem;"
+                            placeholder="ابحث بالاسم أو الرقم..." oninput="filterGeneralTable()">
+                        <button class="btn btn-secondary" onclick="printGeneralLedger()"
+                            style="padding: 0.45rem 0.8rem; font-size: 0.85rem;" title="طباعة كشف الديون العام"><i
+                                data-lucide="printer"></i> طباعة الكشف</button>
                     </div>
                 </div>
 
@@ -1112,7 +1157,7 @@
 
             <!-- العمود الأيسر: إدارة الحساب الفردي الفورية والتسجيل -->
             <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                
+
                 <!-- كارت إدارة الحساب الفردي المختار -->
                 <div class="card" id="individual-customer-card">
                     <div class="loading-overlay" id="sales-loading">
@@ -1126,33 +1171,47 @@
                             إدارة حساب العمليات الفردي
                         </span>
                         <!-- زر إلغاء التحديد للرجوع للوضع الافتراضي -->
-                        <button id="btn-clear-selection" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.78rem; display: none;" onclick="clearSelectedCustomer()">إلغاء التحديد ❌</button>
+                        <button id="btn-clear-selection" class="btn btn-secondary"
+                            style="padding: 0.3rem 0.6rem; font-size: 0.78rem; display: none;"
+                            onclick="clearSelectedCustomer()">إلغاء التحديد ❌</button>
                     </div>
 
                     <!-- صندوق البحث اليدوي المباشر كبديل -->
                     <div id="manual-search-wrapper" style="position: relative; margin-bottom: 1.2rem;">
                         <div class="input-wrapper" style="display: flex; gap: 0.4rem;">
                             <div style="position: relative; flex-grow: 1;">
-                                <input type="text" id="search-customer-input" class="form-control" placeholder="ابحث باسم الزبون أو الهاتف لاستدعاء حسابه..." oninput="handleSearchInput(this.value)" autocomplete="off">
+                                <input type="text" id="search-customer-input" class="form-control"
+                                    placeholder="ابحث باسم الزبون أو الهاتف لاستدعاء حسابه..."
+                                    oninput="handleSearchInput(this.value)" autocomplete="off">
                                 <div id="search-suggestions" class="search-suggestions-dropdown"></div>
                             </div>
-                            <button class="btn btn-primary" onclick="searchCustomerDirect()"><i data-lucide="search"></i> فحص</button>
+                            <button class="btn btn-primary" onclick="searchCustomerDirect()"><i
+                                    data-lucide="search"></i> فحص</button>
                         </div>
                     </div>
 
                     <!-- حاوية تفاصيل الزبون النشط (تظهر عند الاختيار) -->
                     <div id="customer-operations-container" style="display: none;">
-                        <div class="customer-header-row" style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.8rem; margin-bottom: 1rem;">
+                        <div class="customer-header-row"
+                            style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.8rem; margin-bottom: 1rem;">
                             <div>
                                 <h3 id="res-customer-name" style="font-size: 1.2rem; font-weight: 800;">-</h3>
                                 <span class="customer-badge" id="res-customer-id">-</span>
                             </div>
-                            
+
                             <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
-                                <a id="res-customer-phone-link" href="#" class="btn btn-secondary" style="padding: 0.45rem 0.75rem; font-size: 0.75rem;"><i data-lucide="phone"></i> اتصال</a>
-                                <button class="btn btn-accent" onclick="openEditCustomerModal()" style="padding: 0.45rem 0.75rem; font-size: 0.75rem;"><i data-lucide="edit-3"></i> تعديل</button>
-                                <button class="btn btn-whatsapp" onclick="sendWhatsAppReminder()" style="padding: 0.45rem 0.75rem; font-size: 0.75rem;"><i data-lucide="message-square"></i> تذكير</button>
-                                <button class="btn btn-secondary" onclick="printCustomerStatement()" style="padding: 0.45rem 0.75rem; font-size: 0.75rem;"><i data-lucide="printer"></i> كشف</button>
+                                <a id="res-customer-phone-link" href="#" class="btn btn-secondary"
+                                    style="padding: 0.45rem 0.75rem; font-size: 0.75rem;"><i data-lucide="phone"></i>
+                                    اتصال</a>
+                                <button class="btn btn-accent" onclick="openEditCustomerModal()"
+                                    style="padding: 0.45rem 0.75rem; font-size: 0.75rem;"><i data-lucide="edit-3"></i>
+                                    تعديل</button>
+                                <button class="btn btn-whatsapp" onclick="sendWhatsAppReminder()"
+                                    style="padding: 0.45rem 0.75rem; font-size: 0.75rem;"><i
+                                        data-lucide="message-square"></i> تذكير</button>
+                                <button class="btn btn-secondary" onclick="printCustomerStatement()"
+                                    style="padding: 0.45rem 0.75rem; font-size: 0.75rem;"><i data-lucide="printer"></i>
+                                    كشف</button>
                             </div>
                         </div>
 
@@ -1165,26 +1224,39 @@
                                 <div class="info-box-label">عدد الحركات بالدفتر</div>
                                 <div class="info-box-value" id="res-customer-tx-count">0</div>
                             </div>
-                            
+
                             <div id="res-debt-card" class="debt-large-card no-debt">
-                                <div class="info-box-label" style="color: inherit; font-weight: 800; margin-bottom: 0.1rem;">إجمالي الدين المستحق بذمته</div>
-                                <div class="debt-large-amount"><span id="res-customer-debt">0</span> <span style="font-size: 1rem; font-weight: 700;">ر.ي</span></div>
+                                <div class="info-box-label"
+                                    style="color: inherit; font-weight: 800; margin-bottom: 0.1rem;">إجمالي الدين
+                                    المستحق بذمته</div>
+                                <div class="debt-large-amount"><span id="res-customer-debt">0</span> <span
+                                        style="font-size: 1rem; font-weight: 700;">ر.ي</span></div>
                             </div>
                         </div>
 
                         <!-- نموذج تسجيل حركة مالية (دين جديد / تسديد) -->
                         <div class="transaction-form-box">
                             <h4><i data-lucide="plus-circle"></i> تسجيل حركة مالية (دين / تسديد)</h4>
-                            
+
                             <div style="margin-bottom: 0.8rem;">
-                                <div style="display: flex; gap: 0.35rem; align-items: center; overflow-x: auto; padding-bottom: 2px;">
-                                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 800; white-space: nowrap;">مبالغ سريعة:</span>
-                                    <button type="button" class="btn-quick-amount" onclick="setQuickAmount(500)">500</button>
-                                    <button type="button" class="btn-quick-amount" onclick="setQuickAmount(1000)">1000</button>
-                                    <button type="button" class="btn-quick-amount" onclick="setQuickAmount(2000)">2000</button>
-                                    <button type="button" class="btn-quick-amount" onclick="setQuickAmount(5000)">5000</button>
-                                    <button type="button" class="btn-quick-amount" onclick="setQuickAmount(10000)">10000</button>
-                                    <button type="button" class="btn-quick-amount" onclick="setQuickAmountFullDebt()" style="background: rgba(16, 185, 129, 0.15); color: var(--primary); border-color: rgba(16, 185, 129, 0.3);">تصفية كامل الدين</button>
+                                <div
+                                    style="display: flex; gap: 0.35rem; align-items: center; overflow-x: auto; padding-bottom: 2px;">
+                                    <span
+                                        style="font-size: 0.72rem; color: var(--text-muted); font-weight: 800; white-space: nowrap;">مبالغ
+                                        سريعة:</span>
+                                    <button type="button" class="btn-quick-amount"
+                                        onclick="setQuickAmount(500)">500</button>
+                                    <button type="button" class="btn-quick-amount"
+                                        onclick="setQuickAmount(1000)">1000</button>
+                                    <button type="button" class="btn-quick-amount"
+                                        onclick="setQuickAmount(2000)">2000</button>
+                                    <button type="button" class="btn-quick-amount"
+                                        onclick="setQuickAmount(5000)">5000</button>
+                                    <button type="button" class="btn-quick-amount"
+                                        onclick="setQuickAmount(10000)">10000</button>
+                                    <button type="button" class="btn-quick-amount" onclick="setQuickAmountFullDebt()"
+                                        style="background: rgba(16, 185, 129, 0.15); color: var(--primary); border-color: rgba(16, 185, 129, 0.3);">تصفية
+                                        كامل الدين</button>
                                 </div>
                             </div>
 
@@ -1194,13 +1266,16 @@
                                         <option value="debt">إضافة دين (+)</option>
                                         <option value="pay">تسديد دين (-)</option>
                                     </select>
-                                    
-                                    <input type="number" step="any" id="transaction-amount" class="form-control" placeholder="المبلغ" style="direction: ltr; text-align: right; height: 42px;">
-                                    
-                                    <button class="btn btn-primary" onclick="submitTransaction()" style="height: 42px;"><i data-lucide="check-square"></i> حفظ</button>
+
+                                    <input type="number" step="any" id="transaction-amount" class="form-control"
+                                        placeholder="المبلغ" style="direction: ltr; text-align: right; height: 42px;">
+
+                                    <button class="btn btn-primary" onclick="submitTransaction()"
+                                        style="height: 42px;"><i data-lucide="check-square"></i> حفظ</button>
                                 </div>
                                 <div class="transaction-row-bottom" style="margin-top: 0.2rem;">
-                                    <input type="text" id="transaction-items" class="form-control" placeholder="التفاصيل / السلع المشتراة..." style="height: 42px; width: 100%;">
+                                    <input type="text" id="transaction-items" class="form-control"
+                                        placeholder="التفاصيل / السلع المشتراة..." style="height: 42px; width: 100%;">
                                 </div>
                             </div>
                         </div>
@@ -1236,7 +1311,9 @@
                             <i data-lucide="user-x"></i>
                         </div>
                         <h3>لم يتم اختيار أي زبون</h3>
-                        <p style="font-size: 0.85rem; margin-top: 0.5rem; max-width: 320px;">الرجاء النقر على زر <strong>"فحص"</strong> بجوار أي زبون في الجدول الأيمن، أو البحث عنه في الحقل أعلاه لبدء تسجيل عملياته أو تعديل بياناته.</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem; max-width: 320px;">الرجاء النقر على زر
+                            <strong>"فحص"</strong> بجوار أي زبون في الجدول الأيمن، أو البحث عنه في الحقل أعلاه لبدء
+                            تسجيل عملياته أو تعديل بياناته.</p>
                     </div>
                 </div>
 
@@ -1253,18 +1330,28 @@
                     </div>
                     <form id="new-customer-form" onsubmit="registerCustomer(event)">
                         <div style="margin-bottom: 0.8rem;">
-                            <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem; font-weight: 700;">المعرف المقترح (ID)</label>
-                            <input type="number" id="new-cust-id" class="form-control" readonly style="background-color: rgba(0,0,0,0.3); color: var(--primary); font-weight: 800;">
+                            <label
+                                style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem; font-weight: 700;">المعرف
+                                المقترح (ID)</label>
+                            <input type="number" id="new-cust-id" class="form-control" readonly
+                                style="background-color: rgba(0,0,0,0.3); color: var(--primary); font-weight: 800;">
                         </div>
                         <div style="margin-bottom: 0.8rem;">
-                            <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem; font-weight: 700;">اسم الزبون الكامل</label>
-                            <input type="text" id="new-cust-name" class="form-control" placeholder="مثال: أحمد عبد الله الورتاني..." required autocomplete="off">
+                            <label
+                                style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem; font-weight: 700;">اسم
+                                الزبون الكامل</label>
+                            <input type="text" id="new-cust-name" class="form-control"
+                                placeholder="مثال: أحمد عبد الله الورتاني..." required autocomplete="off">
                         </div>
                         <div style="margin-bottom: 1.2rem;">
-                            <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem; font-weight: 700;">رقم الهاتف</label>
-                            <input type="tel" id="new-cust-phone" class="form-control" placeholder="مثال: 0912345678..." required autocomplete="off">
+                            <label
+                                style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem; font-weight: 700;">رقم
+                                الهاتف</label>
+                            <input type="tel" id="new-cust-phone" class="form-control" placeholder="مثال: 0912345678..."
+                                required autocomplete="off">
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;"><i data-lucide="save"></i> تسجيل العميل الجديد بالدفتر</button>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;"><i data-lucide="save"></i>
+                            تسجيل العميل الجديد بالدفتر</button>
                     </form>
                 </div>
 
@@ -1279,10 +1366,14 @@
                         تعديل رمز مرور المشرف (PIN)
                     </div>
                     <div style="margin-bottom: 1rem;">
-                        <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem; font-weight: 700;">رمز المرور الجديد</label>
-                        <input type="password" id="new-admin-pin" class="form-control" placeholder="أدخل 4 أرقام أو حروف على الأقل..." required autocomplete="off">
+                        <label
+                            style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem; font-weight: 700;">رمز
+                            المرور الجديد</label>
+                        <input type="password" id="new-admin-pin" class="form-control"
+                            placeholder="أدخل 4 أرقام أو حروف على الأقل..." required autocomplete="off">
                     </div>
-                    <button class="btn btn-danger" onclick="updateAdminPasscode()" style="width: 100%;"><i data-lucide="lock"></i> تحديث رمز المرور</button>
+                    <button class="btn btn-danger" onclick="updateAdminPasscode()" style="width: 100%;"><i
+                            data-lucide="lock"></i> تحديث رمز المرور</button>
                 </div>
             </div>
 
@@ -1311,8 +1402,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeEditCustomerModal()"><i data-lucide="x"></i> إلغاء</button>
-                <button class="btn btn-primary" onclick="submitEditCustomer()"><i data-lucide="save"></i> حفظ التعديلات</button>
+                <button class="btn btn-secondary" onclick="closeEditCustomerModal()"><i data-lucide="x"></i>
+                    إلغاء</button>
+                <button class="btn btn-primary" onclick="submitEditCustomer()"><i data-lucide="save"></i> حفظ
+                    التعديلات</button>
             </div>
         </div>
     </div>
@@ -1326,39 +1419,13 @@
            ========================================== */
 
         let customers = [];
-        let activeCustomer = null; 
+        let activeCustomer = null;
         let supabaseClient = null;
-        let adminPassword = ""; // لا توجد كلمة مرور افتراضية لزيادة الأمان
         let isAdminAuthenticated = false; // حالة التحقق من الدخول
+        let currentAdminPin = ""; // الرمز النشط المدخل للمشرف
+        let appCurrency = "ر.ي";
+        let appCountryCode = "967";
 
-        // جلب رمز مرور لوحة التحكم من السيرفر
-        async function loadAdminPassword() {
-            if (supabaseClient) {
-                try {
-                    const { data, error } = await supabaseClient
-                        .from('settings')
-                        .select('value')
-                        .eq('key', 'admin_password')
-                        .maybeSingle();
-                    
-                    if (error) {
-                        console.warn("Could not load admin password from settings:", error);
-                        adminPassword = "";
-                    } else if (data) {
-                        adminPassword = data.value;
-                    } else {
-                        adminPassword = "";
-                    }
-                } catch (e) {
-                    console.error("Error loading password:", e);
-                    adminPassword = "";
-                }
-            } else {
-                adminPassword = "";
-            }
-        }
-
-        // تنسيق المبالغ المالية بطريقة أنيقة بدون أصفار عشرية زائدة
         // تنسيق المبالغ المالية بطريقة أنيقة بدون أصفار عشرية زائدة
         function formatAmount(val) {
             const num = parseFloat(val);
@@ -1373,7 +1440,7 @@
         async function initSupabase() {
             const badge = document.getElementById('db-status-badge');
             const errorOverlay = document.getElementById('connection-error-overlay');
-            
+
             if (!navigator.onLine) {
                 handleConnectionError();
                 return;
@@ -1386,21 +1453,32 @@
                 try {
                     // إنشاء كائن الاتصال بـ Supabase
                     supabaseClient = supabase.createClient(defaultUrl, defaultKey);
-                    
-                    // التحقق من عمل الاتصال بطلب بسيط
-                    const { error } = await supabaseClient.from('settings').select('value').eq('key', 'admin_password').maybeSingle();
-                    if (error && error.code !== 'PGRST116') throw error;
-                    
+
+                    // التحقق من عمل الاتصال بطلب بسيط وآمن لجلب الإعدادات غير الحساسة
+                    const { data, error } = await supabaseClient.from('settings').select('*').in('key', ['currency', 'country_code']);
+                    if (error) throw error;
+
+                    if (data) {
+                        const currSetting = data.find(s => s.key === 'currency');
+                        const countrySetting = data.find(s => s.key === 'country_code');
+
+                        if (currSetting) appCurrency = currSetting.value;
+                        if (countrySetting) appCountryCode = countrySetting.value;
+
+                        // تحديث العملة في الواجهة
+                        document.querySelectorAll('.currency-label').forEach(el => {
+                            el.innerText = appCurrency;
+                        });
+                    }
+
                     // إخفاء شاشة تعذر الاتصال
                     if (errorOverlay) errorOverlay.style.display = 'none';
-                    
+
                     // تغيير حالة الشارة إلى متصل
                     if (badge) {
                         badge.innerText = "متصل سحابياً 🌐";
                         badge.className = "status-badge status-online";
                     }
-                    
-                    await loadAdminPassword();
                 } catch (e) {
                     console.error("Supabase initialization error:", e);
                     handleConnectionError();
@@ -1466,7 +1544,7 @@
                         .from('customers')
                         .select('*')
                         .order('id', { ascending: true });
-                    
+
                     if (error) throw error;
                     customers = data || [];
                 } catch (e) {
@@ -1487,9 +1565,9 @@
                         .select('*')
                         .eq('customer_id', customerId)
                         .order('created_at', { ascending: true });
-                    
+
                     if (error) throw error;
-                    
+
                     return data.map(tx => ({
                         id: tx.id,
                         datetime: formatDBDateTime(tx.created_at),
@@ -1515,16 +1593,16 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type === 'error' ? 'error' : ''}`;
-            
+
             const iconName = type === 'error' ? 'alert-triangle' : 'check-circle2';
             toast.innerHTML = `<i data-lucide="${iconName}"></i> <span>${message}</span>`;
-            
+
             container.appendChild(toast);
-            
+
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
-            
+
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(10px)';
@@ -1582,47 +1660,37 @@
             }
 
             try {
-                // جلب الرمز السري من جدول settings
-                const { data, error } = await supabaseClient
-                    .from('settings')
-                    .select('value')
-                    .eq('key', 'admin_password')
-                    .maybeSingle();
-                
-                if (error) throw error;
-                
-                if (data && data.value) {
-                    adminPassword = data.value;
-                } else {
-                    showToast("خطأ: لم يتم تعيين رمز مرور الإدارة في قاعدة البيانات سحابياً.", "error");
-                    return;
-                }
-            } catch(e) {
-                console.error("Error refreshing pin:", e);
-                showToast("تعذر جلب رمز المرور من السيرفر. يرجى التحقق من اتصال الشبكة.", "error");
-                return;
-            }
+                // استدعاء دالة الـ RPC السحابية للتحقق من الرمز بالكامل على مستوى السيرفر لحماية الخصوصية
+                const { data: isValid, error } = await supabaseClient.rpc('check_admin_pin', { input_pin: pin });
 
-            if (adminPassword && pin === adminPassword) {
-                isAdminAuthenticated = true;
-                showToast("تم التحقق بنجاح. مرحباً بك في لوحة الإدارة والعمليات!");
-                input.value = '';
-                
-                // إظهار المحتوى الرئيسي والهيدر، وإخفاء شاشة القفل
-                document.getElementById('admin-lock-screen').style.display = 'none';
-                document.getElementById('admin-navbar').style.display = 'block';
-                document.getElementById('admin-main-content').style.display = 'block';
-                
-                updateAdminDashboard();
-            } else {
-                showToast("رمز المرور الذي أدخلته غير صحيح!", "error");
-                input.value = '';
-                input.focus();
+                if (error) throw error;
+
+                if (isValid) {
+                    isAdminAuthenticated = true;
+                    currentAdminPin = pin; // حفظ الرمز السري لاستخدامه في العمليات اللاحقة المقيدة
+                    showToast("تم التحقق بنجاح. مرحباً بك في لوحة الإدارة والعمليات!");
+                    input.value = '';
+
+                    // إظهار المحتوى الرئيسي والهيدر، وإخفاء شاشة القفل
+                    document.getElementById('admin-lock-screen').style.display = 'none';
+                    document.getElementById('admin-navbar').style.display = 'block';
+                    document.getElementById('admin-main-content').style.display = 'block';
+
+                    await updateAdminDashboard();
+                } else {
+                    showToast("رمز المرور الذي أدخلته غير صحيح!", "error");
+                    input.value = '';
+                    input.focus();
+                }
+            } catch (e) {
+                console.error("Login verification error:", e);
+                showToast("تعذر التحقق من رمز المرور. يرجى التحقق من اتصال الشبكة.", "error");
             }
         }
 
         function logoutMerchant() {
             isAdminAuthenticated = false;
+            currentAdminPin = ""; // تصفير الرمز السري من الذاكرة لضمان الأمان التام عند الخروج
             // إظهار شاشة القفل وإخفاء المحتوى
             document.getElementById('admin-lock-screen').style.display = 'flex';
             document.getElementById('admin-navbar').style.display = 'none';
@@ -1640,20 +1708,20 @@
 
         async function updateAdminDashboard() {
             setLoading('admin-table-loading', true);
-            
+
             // جلب أحدث قائمة عملاء من Supabase
             await fetchAllCustomers();
 
             const totalDebts = customers.reduce((sum, c) => sum + parseFloat(c.debt), 0);
             const debtorsCount = customers.filter(c => parseFloat(c.debt) > 0).length;
 
-            document.getElementById('stat-total-debts').innerText = `${formatAmount(totalDebts)} ر.ي`;
+            document.getElementById('stat-total-debts').innerText = `${formatAmount(totalDebts)} ${appCurrency}`;
             document.getElementById('stat-total-customers').innerText = customers.length;
             document.getElementById('stat-debtors-count').innerText = debtorsCount;
 
             suggestNextCustomerId();
             renderGeneralTable();
-            
+
             // تحديث بطاقة العميل المحدد إن وُجد لمزامنة أي عمليات جديدة
             if (activeCustomer) {
                 const updated = customers.find(c => c.id === activeCustomer.id);
@@ -1682,8 +1750,8 @@
             const tbody = document.getElementById('general-table-body');
             tbody.innerHTML = '';
 
-            const filtered = customers.filter(c => 
-                c.name.toLowerCase().includes(filterText.toLowerCase()) || 
+            const filtered = customers.filter(c =>
+                c.name.toLowerCase().includes(filterText.toLowerCase()) ||
                 c.id.toString().includes(filterText) ||
                 c.phone.includes(filterText)
             );
@@ -1699,16 +1767,16 @@
             sorted.forEach(c => {
                 const tr = document.createElement('tr');
                 const debt = parseFloat(c.debt);
-                
-                const statusBadge = debt > 0 
-                    ? `<span class="badge badge-red">عليه دين</span>` 
+
+                const statusBadge = debt > 0
+                    ? `<span class="badge badge-red">عليه دين</span>`
                     : `<span class="badge badge-green">حساب خالص</span>`;
 
                 tr.innerHTML = `
                     <td style="font-weight: 800; color: var(--primary);">#${c.id}</td>
                     <td style="font-weight: 700;">${c.name}</td>
                     <td style="direction: ltr; text-align: right;">${c.phone}</td>
-                    <td style="font-weight: 800; color: ${debt > 0 ? 'var(--danger)' : 'var(--primary)'};">${formatAmount(debt)} ر.ي</td>
+                    <td style="font-weight: 800; color: ${debt > 0 ? 'var(--danger)' : 'var(--primary)'};">${formatAmount(debt)} ${appCurrency}</td>
                     <td>${statusBadge}</td>
                     <td style="text-align: center; display: flex; gap: 0.3rem; justify-content: center;">
                         <button class="btn btn-secondary" onclick="inspectCustomerFromTable(${c.id})" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" title="فحص وإدارة حساب العميل">فحص</button>
@@ -1742,24 +1810,24 @@
         async function handleSearchInput(val) {
             const query = val.trim().toLowerCase();
             const dropdown = document.getElementById('search-suggestions');
-            
+
             if (!query) {
                 dropdown.style.display = 'none';
                 return;
             }
-            
-            const matches = customers.filter(c => 
-                c.name.toLowerCase().includes(query) || 
-                c.phone.includes(query) || 
+
+            const matches = customers.filter(c =>
+                c.name.toLowerCase().includes(query) ||
+                c.phone.includes(query) ||
                 c.id.toString().includes(query)
             ).slice(0, 5);
-            
+
             if (matches.length === 0) {
                 dropdown.innerHTML = `<div style="padding: 0.8rem 1rem; color: var(--text-muted); font-size: 0.85rem; text-align: center; font-weight: 700;">لا يوجد زبون مطابق للبحث</div>`;
                 dropdown.style.display = 'block';
                 return;
             }
-            
+
             dropdown.innerHTML = matches.map(c => `
                 <div class="suggestion-item" onclick="selectSuggestion(${c.id})">
                     <div>
@@ -1767,11 +1835,11 @@
                         <span class="suggestion-details" style="display: block;">المعرف: #${c.id} | الهاتف: ${c.phone}</span>
                     </div>
                     <span class="suggestion-debt" style="color: ${parseFloat(c.debt) > 0 ? 'var(--danger)' : 'var(--primary)'}">
-                        ${formatAmount(c.debt)} ر.ي
+                        ${formatAmount(c.debt)} ${appCurrency}
                     </span>
                 </div>
             `).join('');
-            
+
             dropdown.style.display = 'block';
         }
 
@@ -1790,14 +1858,14 @@
 
             setLoading('sales-loading', true);
             await fetchAllCustomers();
-            
-            const customer = customers.find(c => 
-                c.id.toString() === inputVal || 
-                c.name.toLowerCase() === inputVal.toLowerCase() || 
+
+            const customer = customers.find(c =>
+                c.id.toString() === inputVal ||
+                c.name.toLowerCase() === inputVal.toLowerCase() ||
                 c.phone === inputVal
-            ) || customers.find(c => 
-                c.name.toLowerCase().includes(inputVal.toLowerCase()) || 
-                c.phone.includes(inputVal) || 
+            ) || customers.find(c =>
+                c.name.toLowerCase().includes(inputVal.toLowerCase()) ||
+                c.phone.includes(inputVal) ||
                 c.id.toString().includes(inputVal)
             );
 
@@ -1826,7 +1894,7 @@
             document.getElementById('res-customer-phone').innerText = activeCustomer.phone;
             document.getElementById('res-customer-phone-link').href = `tel:${activeCustomer.phone}`;
             document.getElementById('res-customer-tx-count').innerText = activeCustomer.transactions ? activeCustomer.transactions.length : 0;
-            
+
             const debt = parseFloat(activeCustomer.debt);
             document.getElementById('res-customer-debt').innerText = formatAmount(debt);
 
@@ -1879,7 +1947,7 @@
                 tr.innerHTML = `
                     <td style="color: var(--text-muted); font-size: 0.8rem; direction: ltr; text-align: right;">${tx.datetime}</td>
                     <td style="color: ${typeColor}; font-weight: 800;">${typeText}</td>
-                    <td style="font-weight: 800; color: ${typeColor}; direction: ltr; text-align: left;">${amountSign}${formatAmount(tx.amount)} ر.ي</td>
+                    <td style="font-weight: 800; color: ${typeColor}; direction: ltr; text-align: left;">${amountSign}${formatAmount(tx.amount)} ${appCurrency}</td>
                     <td style="font-weight: 700;">${tx.items || 'بدون تفاصيل'}</td>
                     <td style="text-align: center;">
                         <button class="btn-delete" onclick="deleteTransaction(${tx.id})" title="حذف وإلغاء هذه المعاملة">
@@ -1933,22 +2001,22 @@
             }
 
             try {
-                // إدراج المعاملة في Supabase
-                const { error: txError } = await supabaseClient
-                    .from('transactions')
-                    .insert([{ 
-                        customer_id: activeCustomer.id, 
-                        amount: amount, 
-                        type: type, 
-                        items: items || (type === 'pay' ? 'تسديد دفعة مالية نقداً' : 'شراء منتجات متنوعة')
-                    }]);
+                // استدعاء دالة RPC الآمنة والتحقق من PIN على السيرفر لتسجيل المعاملة
+                const { data: success, error: txError } = await supabaseClient
+                    .rpc('add_transaction', {
+                        pin: currentAdminPin,
+                        p_customer_id: activeCustomer.id,
+                        p_amount: amount,
+                        p_type: type,
+                        p_items: items || (type === 'pay' ? 'تسديد دفعة مالية نقداً' : 'شراء منتجات متنوعة')
+                    });
 
                 if (txError) throw txError;
 
                 showToast("تم تسجيل المعاملة وحفظ البيانات بنجاح سحابياً. 🎉");
             } catch (e) {
                 console.error(e);
-                showToast("حدث خطأ أثناء حفظ المعاملة في السيرفر السحابي.", "error");
+                showToast("حدث خطأ أثناء حفظ المعاملة في السيرفر السحابي: " + (e.message || e), "error");
             }
 
             // إعادة تحديث الإحصائيات وجدول العملاء والزبون المحدد
@@ -1967,20 +2035,22 @@
             }
 
             setLoading('sales-loading', true);
-            
+
             try {
-                const { error } = await supabaseClient
-                    .from('transactions')
-                    .delete()
-                    .eq('id', txId);
-                
+                // استدعاء دالة RPC الآمنة والتحقق من PIN لحذف المعاملة
+                const { data: success, error } = await supabaseClient
+                    .rpc('delete_transaction', {
+                        pin: currentAdminPin,
+                        p_id: txId
+                    });
+
                 if (error) throw error;
                 showToast("تم إلغاء الحركة وتحديث الحسابات سحابياً.");
             } catch (e) {
                 console.error(e);
-                showToast("حدث خطأ أثناء الاتصال بالسيرفر لحذف الحركة.", "error");
+                showToast("حدث خطأ أثناء الاتصال بالسيرفر لحذف الحركة: " + (e.message || e), "error");
             }
-            
+
             await updateAdminDashboard();
             setLoading('sales-loading', false);
         }
@@ -1998,7 +2068,7 @@
         // تسجيل عميل جديد
         async function registerCustomer(event) {
             event.preventDefault();
-            
+
             const id = parseInt(document.getElementById('new-cust-id').value);
             const name = document.getElementById('new-cust-name').value.trim();
             const phone = document.getElementById('new-cust-phone').value.trim();
@@ -2016,17 +2086,22 @@
             setLoading('admin-form-loading', true);
 
             try {
-                const { error } = await supabaseClient
-                    .from('customers')
-                    .insert([{ id, name, phone, debt: 0 }]);
-                
+                // استدعاء دالة RPC الآمنة والتحقق من PIN لتسجيل العميل الجديد
+                const { data: success, error } = await supabaseClient
+                    .rpc('add_customer', {
+                        pin: currentAdminPin,
+                        p_id: id,
+                        p_name: name,
+                        p_phone: phone
+                    });
+
                 if (error) throw error;
-                
+
                 showToast(`تم تسجيل العميل الجديد (${name}) بنجاح.`);
                 document.getElementById('new-customer-form').reset();
             } catch (e) {
                 console.error(e);
-                showToast("فشل حفظ الزبون الجديد في قاعدة البيانات السحابية.", "error");
+                showToast("فشل حفظ الزبون الجديد في قاعدة البيانات السحابية: " + (e.message || e), "error");
             }
 
             await updateAdminDashboard();
@@ -2046,11 +2121,13 @@
             setLoading('admin-table-loading', true);
 
             try {
-                const { error } = await supabaseClient
-                    .from('customers')
-                    .delete()
-                    .eq('id', id);
-                
+                // استدعاء دالة RPC الآمنة والتحقق من PIN لحذف العميل بالكامل
+                const { data: success, error } = await supabaseClient
+                    .rpc('delete_customer', {
+                        pin: currentAdminPin,
+                        p_id: id
+                    });
+
                 if (error) throw error;
                 showToast(`تم حذف العميل (${name}) وكافة سجلاته بنجاح.`, "error");
                 if (activeCustomer && activeCustomer.id === id) {
@@ -2058,7 +2135,7 @@
                 }
             } catch (e) {
                 console.error(e);
-                showToast("فشل حذف الزبون من السيرفر السحابي.", "error");
+                showToast("فشل حذف الزبون من السيرفر السحابي: " + (e.message || e), "error");
             }
 
             await updateAdminDashboard();
@@ -2073,15 +2150,17 @@
                 showToast("الزبون ليس لديه أي ديون معلقة لتذكيره بها.", "error");
                 return;
             }
-            
+
             let cleanPhone = activeCustomer.phone.replace(/[^0-9]/g, '');
             if (cleanPhone.startsWith('0')) {
-                cleanPhone = '218' + cleanPhone.substring(1);
+                cleanPhone = appCountryCode + cleanPhone.substring(1);
+            } else if (!cleanPhone.startsWith(appCountryCode)) {
+                cleanPhone = appCountryCode + cleanPhone;
             }
-            
-            const message = `مرحباً سيد ${activeCustomer.name}، نود تذكيركم بلطف بأن إجمالي الدين المستحق والموثق لديكم في حسابات البقالة هو (${formatAmount(debt)} ر.ي). نسعد بتواجدكم ونسعى دوماً لخدمتكم بأفضل جودة. شكراً لكم.`;
+
+            const message = `مرحباً سيد ${activeCustomer.name}، نود تذكيركم بلطف بأن إجمالي الدين المستحق والموثق لديكم في حسابات البقالة هو (${formatAmount(debt)} ${appCurrency}). نسعد بتواجدكم ونسعى دوماً لخدمتكم بأفضل جودة. شكراً لكم.`;
             const encodedText = encodeURIComponent(message);
-            
+
             window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodedText}`, '_blank');
         }
 
@@ -2123,41 +2202,29 @@
             setLoading('sales-loading', true);
 
             try {
-                // التحقق من تكرار المعرف إذا تم تغييره
-                if (newId !== activeCustomer.id) {
-                    const { data: existingCust, error: checkError } = await supabaseClient
-                        .from('customers')
-                        .select('id')
-                        .eq('id', newId)
-                        .maybeSingle();
-                    
-                    if (checkError) throw checkError;
-                    if (existingCust) {
-                        showToast(`خطأ: المعرف الجديد (${newId}) مستخدم بالفعل لعميل آخر!`, "error");
-                        setLoading('sales-loading', false);
-                        return;
-                    }
-                }
+                // استدعاء دالة RPC الآمنة والتحقق من PIN لتعديل بيانات العميل بشكل آمن
+                const { data: success, error } = await supabaseClient
+                    .rpc('update_customer', {
+                        pin: currentAdminPin,
+                        p_id: activeCustomer.id,
+                        p_new_id: newId,
+                        p_new_name: newName,
+                        p_new_phone: newPhone
+                    });
 
-                // تحديث بيانات العميل في Supabase
-                const { error } = await supabaseClient
-                    .from('customers')
-                    .update({ id: newId, name: newName, phone: newPhone })
-                    .eq('id', activeCustomer.id);
-                
                 if (error) throw error;
-                
+
                 showToast("تم تحديث بيانات العميل بنجاح سحابياً.");
-                
+
                 // تحديث معرف العميل النشط في الذاكرة لتطابق البيانات الجديدة
                 if (newId !== activeCustomer.id) {
                     activeCustomer.id = newId;
                 }
-                
+
                 closeEditCustomerModal();
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
-                showToast("فشل تعديل بيانات العميل على السيرفر.", "error");
+                showToast("فشل تعديل بيانات العميل على السيرفر: " + (e.message || e), "error");
             }
 
             await updateAdminDashboard();
@@ -2187,18 +2254,22 @@
             setLoading('admin-password-loading', true);
 
             try {
-                const { error } = await supabaseClient
-                    .from('settings')
-                    .upsert({ key: 'admin_password', value: newPin });
-                
+                // استدعاء دالة RPC الآمنة والتحقق من PIN لتعديل الرمز السري
+                const { data: success, error } = await supabaseClient
+                    .rpc('update_setting', {
+                        pin: currentAdminPin,
+                        p_key: 'admin_password',
+                        p_value: newPin
+                    });
+
                 if (error) throw error;
-                
-                adminPassword = newPin;
+
+                currentAdminPin = newPin; // تحديث الرمز النشط المخزن
                 showToast("تم تحديث رمز مرور المشرف (PIN) سحابياً بنجاح! 🎉");
                 input.value = '';
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
-                showToast("حدث خطأ أثناء حفظ الرمز الجديد سحابياً.", "error");
+                showToast("حدث خطأ أثناء حفظ الرمز الجديد سحابياً: " + (e.message || e), "error");
             }
 
             setLoading('admin-password-loading', false);
@@ -2207,13 +2278,13 @@
         // كشف حساب تفصيلي للعميل
         function printCustomerStatement() {
             if (!activeCustomer) return;
-            
+
             const printWindow = window.open('', '_blank');
             const txRows = (activeCustomer.transactions || []).map(tx => `
                 <tr>
                     <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px; font-weight: 500; direction: ltr; text-align: right;">${tx.datetime}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: ${tx.type === 'debt' ? '#e11d48' : '#059669'}; text-align: left;">
-                        ${tx.type === 'debt' ? '+' : ''}${formatAmount(tx.amount)} ر.ي
+                        ${tx.type === 'debt' ? '+' : ''}${formatAmount(tx.amount)} ${appCurrency}
                     </td>
                     <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">${tx.items || 'بدون تفاصيل'}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: ${tx.type === 'debt' ? '#e11d48' : '#059669'};">
@@ -2279,7 +2350,7 @@
 
                     <div class="total-card">
                         <span class="total-label">إجمالي الديون المتبقية بذمة العميل حالياً:</span>
-                        <span class="total-value">${formatAmount(activeCustomer.debt)} ر.ي</span>
+                        <span class="total-value">${formatAmount(activeCustomer.debt)} ${appCurrency}</span>
                     </div>
 
                     <div class="print-footer">
@@ -2296,13 +2367,13 @@
         function printGeneralLedger() {
             const printWindow = window.open('', '_blank');
             const totalDebts = customers.reduce((sum, c) => sum + parseFloat(c.debt), 0);
-            
+
             const rows = customers.map(c => `
                 <tr>
                     <td style="padding: 10px; border-bottom: 1px solid #cbd5e1; font-weight: bold; color: #0f172a;">#${c.id}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #cbd5e1; font-weight: bold;">${c.name}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #cbd5e1; direction: ltr; text-align: right;">${c.phone}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #cbd5e1; font-weight: bold; color: ${parseFloat(c.debt) > 0 ? '#e11d48' : '#059669'};">${formatAmount(c.debt)} ر.ي</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #cbd5e1; font-weight: bold; color: ${parseFloat(c.debt) > 0 ? '#e11d48' : '#059669'};">${formatAmount(c.debt)} ${appCurrency}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #cbd5e1; font-weight: bold; color: ${parseFloat(c.debt) > 0 ? '#e11d48' : '#059669'};">
                         ${parseFloat(c.debt) > 0 ? 'عليه دين' : 'حساب خالص'}
                     </td>
@@ -2357,7 +2428,7 @@
                     <div class="total-summary">
                         <div class="total-card" style="border-right: 4px solid #e11d48;">
                             <span class="total-label">إجمالي الديون المعلقة بالسوق:</span>
-                            <span class="total-value" style="color: #e11d48;">${formatAmount(totalDebts)} ر.ي</span>
+                            <span class="total-value" style="color: #e11d48;">${formatAmount(totalDebts)} ${appCurrency}</span>
                         </div>
                         <div class="total-card" style="border-right: 4px solid #0f172a;">
                             <span class="total-label">عدد العملاء الإجمالي:</span>
@@ -2384,4 +2455,5 @@
         });
     </script>
 </body>
+
 </html>
