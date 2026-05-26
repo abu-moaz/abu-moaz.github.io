@@ -1,45 +1,56 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta name="google-site-verification" content="677zBK6P8UrTvEL1WOPICcVLwK_vLnqYBW8TQAqaSLM" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بقالة ابو معاذ الشرعبي</title>
-    
+
     <meta name="description" content="هذا الموقع خاص ببقالة ابو معاذ الشرعبي لمعرفة ديون الزبائن">
 
     <meta property="og:title" content="بقالة ابو معاذ الشرعبي">
     <meta property="og:description" content="هذا الموقع خاص لي بقالة ابو معاذ الشرعبي لمعرفة ديون الزباين">
     <meta property="og:image" content="https://abu-moaz.github.io/image1.png">
     <meta property="og:url" content="https://abu-moaz.github.io/">
-    
+
     <!-- استدعاء خط Cairo الاحترافي من Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <!-- صورة خارجية للموقع -->
     <link rel="icon" type="image/png" href="image1.png">
     <link rel="apple-touch-icon" href="image1.png">
     <!-- استدعاء مكتبة Supabase JS Client عبر CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <!-- استدعاء مكتبة أيقونات Lucide الرائعة عبر CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         /* التنسيقات العامة ومتغيرات التصميم - ثيم زجاجي داكن فاخر */
         :root {
-            --bg-main: #0b0f19;       /* لون الخلفية الأساسي */
-            --bg-card: rgba(19, 27, 46, 0.65); /* بطاقات زجاجية شبه شفافة */
-            --bg-accent: rgba(30, 41, 59, 0.8); /* عناصر تفاعلية */
-            --bg-hover: rgba(51, 65, 85, 0.85); /* تأثير الحوم */
-            --primary: #10b981;       /* الزمردي النشط للمؤشرات الإيجابية والتسديد */
+            --bg-main: #0b0f19;
+            /* لون الخلفية الأساسي */
+            --bg-card: rgba(19, 27, 46, 0.65);
+            /* بطاقات زجاجية شبه شفافة */
+            --bg-accent: rgba(30, 41, 59, 0.8);
+            /* عناصر تفاعلية */
+            --bg-hover: rgba(51, 65, 85, 0.85);
+            /* تأثير الحوم */
+            --primary: #10b981;
+            /* الزمردي النشط للمؤشرات الإيجابية والتسديد */
             --primary-gradient: linear-gradient(135deg, #10b981, #059669);
-            --danger: #f43f5e;        /* الوردي الناري للديون والتنبيهات والحذف */
+            --danger: #f43f5e;
+            /* الوردي الناري للديون والتنبيهات والحذف */
             --danger-gradient: linear-gradient(135deg, #f43f5e, #e11d48);
-            --text-main: #f8fafc;     /* لون النصوص الأساسي */
-            --text-muted: #94a3b8;    /* لون النصوص الثانوية */
-            --border-color: rgba(255, 255, 255, 0.08); /* لون الحدود الزجاجية */
+            --text-main: #f8fafc;
+            /* لون النصوص الأساسي */
+            --text-muted: #94a3b8;
+            /* لون النصوص الثانوية */
+            --border-color: rgba(255, 255, 255, 0.08);
+            /* لون الحدود الزجاجية */
             --glass-effect: blur(20px) saturate(180%);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
             --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.25);
@@ -69,13 +80,16 @@
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: var(--bg-main);
         }
+
         ::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: 4px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: var(--text-muted);
         }
@@ -140,13 +154,25 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         @keyframes fadeInDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         /* شريط التنقل العلوي */
@@ -280,8 +306,15 @@
         }
 
         @keyframes slideDown {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .settings-grid {
@@ -511,8 +544,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .customer-header-row {
@@ -845,7 +885,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* نظام الإشعارات البسيط */
@@ -880,8 +922,15 @@
         }
 
         @keyframes slideIn {
-            from { transform: translateX(-110%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(-110%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .toast.error {
@@ -973,8 +1022,15 @@
         }
 
         @keyframes scaleUp {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .modal-header {
@@ -1025,6 +1081,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- شاشة حظر الاتصال عند انقطاع الإنترنت أو فشل السيرفر -->
@@ -1034,8 +1091,10 @@
                 <i data-lucide="wifi-off" style="width: 40px; height: 40px;"></i>
             </div>
             <h2>فشل الاتصال بقاعدة البيانات السحابية</h2>
-            <p>تعذر تشغيل المنظومة حالياً لأنها تتطلب اتصالاً مباشراً بقاعدة بيانات Supabase السحابية للعمل بشكل آمن، وقد تم قطع الاتصال أو انقطاع شبكة الإنترنت. يرجى التحقق من اتصالك بالإنترنت ثم إعادة المحاولة.</p>
-            <button class="btn btn-primary" onclick="retryConnection()" style="margin: 0 auto; display: flex; gap: 0.5rem; align-items: center; padding: 0.75rem 1.5rem; font-size: 0.95rem;">
+            <p>تعذر تشغيل المنظومة حالياً لأنها تتطلب اتصالاً مباشراً بقاعدة بيانات Supabase السحابية للعمل بشكل آمن،
+                وقد تم قطع الاتصال أو انقطاع شبكة الإنترنت. يرجى التحقق من اتصالك بالإنترنت ثم إعادة المحاولة.</p>
+            <button class="btn btn-primary" onclick="retryConnection()"
+                style="margin: 0 auto; display: flex; gap: 0.5rem; align-items: center; padding: 0.75rem 1.5rem; font-size: 0.95rem;">
                 <i data-lucide="refresh-cw"></i>
                 إعادة محاولة الاتصال الفوري 🌐
             </button>
@@ -1050,18 +1109,19 @@
                     <i data-lucide="scale" style="stroke-width: 2.5px;"></i>
                 </div>
                 <div class="logo-text">
-                    <h1>بقالة ابو معاذ الشرعبي</h1>
+                    <h1>منظومة ديون البقالة الذكية</h1>
                     <span>دفتر الديون الموثق المتصل بقاعدة البيانات</span>
                 </div>
             </div>
-            
+
             <div class="nav-controls">
                 <!-- حالة الاتصال البرمجية -->
                 <span id="db-status-badge" class="status-badge status-online">
                     متصل سحابياً 🌐
                 </span>
 
-                <a href="admin.html" class="tab-btn" style="text-decoration: none; border-radius: var(--radius-md); display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-weight: 700;">
+                <a href="admin.html" class="tab-btn"
+                    style="text-decoration: none; border-radius: var(--radius-md); display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-weight: 700;">
                     <i data-lucide="lock"></i>
                     بوابة التاجر 🔐
                 </a>
@@ -1071,7 +1131,7 @@
 
     <!-- المحتوى الرئيسي للموقع -->
     <main>
-        
+
         <!-- التبويب الأول: فحص الديون والبيع والتوثيق -->
         <section id="sales-tab" class="tab-content active">
             <div class="card" id="sales-card">
@@ -1083,31 +1143,36 @@
 
                 <div class="card-title">
                     <i data-lucide="user-search"></i>
-                    البحث عن العميل
+                    البحث الذكي عن العميل
                 </div>
-                
+
                 <!-- صندوق الاستعلام الآمن للزبون -->
                 <div class="search-section" style="position: relative;">
                     <div class="input-wrapper" style="display: flex; gap: 0.5rem;">
                         <div style="position: relative; flex-grow: 1;">
-                            <input type="text" id="search-customer-input" class="form-control" placeholder="ادخل ID الخاص بك لمعرفة الدين" autocomplete="off">
+                            <input type="text" id="search-customer-input" class="form-control"
+                                placeholder="أدخل رقم الهوية الفريد (ID) أو رقم الهاتف بدقة للاستعلام..."
+                                autocomplete="off">
                         </div>
-                        <button class="btn btn-primary" onclick="searchCustomerDirect()"><i data-lucide="search"></i> فحص الحساب</button>
+                        <button class="btn btn-primary" onclick="searchCustomerDirect()"><i data-lucide="search"></i>
+                            فحص الحساب</button>
                     </div>
                 </div>
 
                 <!-- حاوية النتيجة عند العثور على العميل -->
                 <div id="search-result-container" class="search-result-layout">
-                    
+
                     <div class="customer-header-row">
                         <div>
                             <h3 id="res-customer-name" style="font-size: 1.3rem; font-weight: 800;">اسم العميل</h3>
                             <span class="customer-badge" id="res-customer-id"> المعرف: #1001 </span>
                         </div>
-                        
+
                         <!-- أزرار الإجراءات السريعة -->
                         <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
-                            <button class="btn btn-secondary" onclick="printCustomerStatement()" style="padding: 0.5rem 0.9rem; font-size: 0.8rem;"><i data-lucide="printer"></i> طباعة كشف الحساب</button>
+                            <button class="btn btn-secondary" onclick="printCustomerStatement()"
+                                style="padding: 0.5rem 0.9rem; font-size: 0.8rem;"><i data-lucide="printer"></i> طباعة
+                                كشف الحساب</button>
                         </div>
                     </div>
 
@@ -1120,10 +1185,13 @@
                             <div class="info-box-label">إجمالي العمليات المسجلة</div>
                             <div class="info-box-value" id="res-customer-tx-count">0</div>
                         </div>
-                        
+
                         <div id="res-debt-card" class="debt-large-card no-debt">
-                            <div class="info-box-label" style="color: inherit; font-weight: 800; margin-bottom: 0.1rem;">الدين الحالي المستحق بذمته</div>
-                            <div class="debt-large-amount"><span id="res-customer-debt">0</span> <span style="font-size: 1rem; font-weight: 700;">ر.ي</span></div>
+                            <div class="info-box-label"
+                                style="color: inherit; font-weight: 800; margin-bottom: 0.1rem;">الدين الحالي المستحق
+                                بذمته</div>
+                            <div class="debt-large-amount"><span id="res-customer-debt">0</span> <span
+                                    style="font-size: 1rem; font-weight: 700;" class="currency-label">ر.ي</span></div>
                         </div>
                     </div>
 
@@ -1165,9 +1233,10 @@
            1. البيانات وحالة الاتصال بـ Supabase
            ========================================== */
 
-        let customers = [];
-        let activeCustomer = null; 
+        let activeCustomer = null;
         let supabaseClient = null;
+        let appCurrency = 'ر.ي';
+        let appCountryCode = '967';
 
         // تنسيق المبالغ المالية بطريقة أنيقة بدون أصفار عشرية زائدة
         function formatAmount(val) {
@@ -1183,7 +1252,7 @@
         async function initSupabase() {
             const badge = document.getElementById('db-status-badge');
             const errorOverlay = document.getElementById('connection-error-overlay');
-            
+
             if (!navigator.onLine) {
                 handleConnectionError();
                 return;
@@ -1196,14 +1265,27 @@
                 try {
                     // إنشاء كائن الاتصال بـ Supabase
                     supabaseClient = supabase.createClient(defaultUrl, defaultKey);
-                    
-                    // التحقق من عمل الاتصال بطلب بسيط
-                    const { error } = await supabaseClient.from('settings').select('value').eq('key', 'admin_password').maybeSingle();
-                    if (error && error.code !== 'PGRST116') throw error;
-                    
+
+                    // التحقق من عمل الاتصال بطلب بسيط وآمن لجلب الإعدادات غير الحساسة
+                    const { data, error } = await supabaseClient.from('settings').select('*').in('key', ['currency', 'country_code']);
+                    if (error) throw error;
+
+                    if (data) {
+                        const currSetting = data.find(s => s.key === 'currency');
+                        const countrySetting = data.find(s => s.key === 'country_code');
+
+                        if (currSetting) appCurrency = currSetting.value;
+                        if (countrySetting) appCountryCode = countrySetting.value;
+
+                        // تحديث العملة في الواجهة
+                        document.querySelectorAll('.currency-label').forEach(el => {
+                            el.innerText = appCurrency;
+                        });
+                    }
+
                     // إخفاء شاشة تعذر الاتصال
                     if (errorOverlay) errorOverlay.style.display = 'none';
-                    
+
                     // تغيير حالة الشارة إلى متصل
                     if (badge) {
                         badge.innerText = "متصل سحابياً 🌐";
@@ -1243,7 +1325,7 @@
                 await initSupabase();
                 if (supabaseClient) {
                     showToast("تم الاتصال بـ Supabase بنجاح! 🎉");
-                    
+
                     // تحديث الواجهة مباشرة
                     if (activeCustomer) {
                         setLoading('sales-loading', true);
@@ -1271,26 +1353,6 @@
             }
         }
 
-        // جلب قائمة العملاء
-        async function fetchAllCustomers() {
-            if (supabaseClient) {
-                try {
-                    const { data, error } = await supabaseClient
-                        .from('customers')
-                        .select('*')
-                        .order('id', { ascending: true });
-                    
-                    if (error) throw error;
-                    customers = data || [];
-                } catch (e) {
-                    console.error("Supabase error:", e);
-                    handleConnectionError();
-                }
-            } else {
-                customers = [];
-            }
-        }
-
         // جلب سجل المعاملات لزبون معين
         async function fetchCustomerTransactions(customerId) {
             if (supabaseClient) {
@@ -1300,9 +1362,9 @@
                         .select('*')
                         .eq('customer_id', customerId)
                         .order('created_at', { ascending: true });
-                    
+
                     if (error) throw error;
-                    
+
                     return data.map(tx => ({
                         id: tx.id,
                         datetime: formatDBDateTime(tx.created_at),
@@ -1331,17 +1393,17 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type === 'error' ? 'error' : ''}`;
-            
+
             // إضافة أيقونة مناسبة للإشعار
             const iconName = type === 'error' ? 'alert-triangle' : 'check-circle2';
             toast.innerHTML = `<i data-lucide="${iconName}"></i> <span>${message}</span>`;
-            
+
             container.appendChild(toast);
-            
+
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
-            
+
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(10px)';
@@ -1406,30 +1468,47 @@
             }
 
             setLoading('sales-loading', true);
-            
-            // تحديث القائمة المحلية لضمان قراءة أحدث دين
-            await fetchAllCustomers();
-            
-            // العثور على العميل بالمعرف الدقيق أو برقم الهاتف المطابق تماماً (منع التخمين وحماية الخصوصية)
-            const customer = customers.find(c => 
-                c.id.toString() === inputVal || 
-                c.phone === inputVal
-            );
 
-            if (!customer) {
-                showToast("عذراً، رقم المعرف (ID) أو رقم الهاتف غير مسجل في النظام.", "error");
-                document.getElementById('search-result-container').style.display = 'none';
-                activeCustomer = null;
+            if (!supabaseClient) {
+                showToast("خطأ: لا يوجد اتصال نشط بقاعدة البيانات.", "error");
                 setLoading('sales-loading', false);
                 return;
             }
 
-            activeCustomer = customer;
-            
-            // جلب سجل المعاملات التاريخية
-            activeCustomer.transactions = await fetchCustomerTransactions(customer.id);
+            try {
+                // استعلام آمن ودقيق لمنع تخمين الحسابات وحماية خصوصية العملاء
+                let query = supabaseClient.from('customers').select('*');
 
-            renderActiveCustomerDetails();
+                const parsedId = parseInt(inputVal);
+                if (!isNaN(parsedId)) {
+                    query = query.or(`id.eq.${parsedId},phone.eq.${inputVal}`);
+                } else {
+                    query = query.eq('phone', inputVal);
+                }
+
+                const { data: customer, error } = await query.maybeSingle();
+
+                if (error) throw error;
+
+                if (!customer) {
+                    showToast("عذراً، رقم المعرف (ID) أو رقم الهاتف غير مسجل في النظام.", "error");
+                    document.getElementById('search-result-container').style.display = 'none';
+                    activeCustomer = null;
+                    setLoading('sales-loading', false);
+                    return;
+                }
+
+                activeCustomer = customer;
+
+                // جلب سجل المعاملات التاريخية للعميل المستهدف فقط
+                activeCustomer.transactions = await fetchCustomerTransactions(customer.id);
+
+                renderActiveCustomerDetails();
+            } catch (e) {
+                console.error("Search error:", e);
+                showToast("حدث خطأ أثناء البحث عن العميل.", "error");
+            }
+
             setLoading('sales-loading', false);
         }
 
@@ -1441,7 +1520,7 @@
             document.getElementById('res-customer-id').innerText = `المعرف الفريد: #${activeCustomer.id}`;
             document.getElementById('res-customer-phone').innerText = activeCustomer.phone;
             document.getElementById('res-customer-tx-count').innerText = activeCustomer.transactions ? activeCustomer.transactions.length : 0;
-            
+
             const debt = parseFloat(activeCustomer.debt);
             document.getElementById('res-customer-debt').innerText = formatAmount(debt);
 
@@ -1477,7 +1556,7 @@
 
                 tr.innerHTML = `
                     <td style="color: var(--text-muted); font-size: 0.8rem; direction: ltr; text-align: right;">${tx.datetime}</td>
-                    <td style="font-weight: 800; color: ${typeColor}; direction: ltr; text-align: left;">${amountSign}${formatAmount(tx.amount)} ر.ي</td>
+                    <td style="font-weight: 800; color: ${typeColor}; direction: ltr; text-align: left;">${amountSign}${formatAmount(tx.amount)} ${appCurrency}</td>
                     <td style="font-weight: 700;">${tx.items || 'بدون تفاصيل'}</td>
                     <td style="color: ${typeColor}; font-weight: 800;">${typeText}</td>
                 `;
@@ -1491,13 +1570,13 @@
         // طباعة كشف حساب تفصيلي للعميل في نافذة منفصلة منسقة
         function printCustomerStatement() {
             if (!activeCustomer) return;
-            
+
             const printWindow = window.open('', '_blank');
             const txRows = (activeCustomer.transactions || []).map(tx => `
                 <tr>
                     <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px; font-weight: 500; direction: ltr; text-align: right;">${tx.datetime}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: ${tx.type === 'debt' ? '#e11d48' : '#059669'}; text-align: left;">
-                        ${tx.type === 'debt' ? '+' : ''}${formatAmount(tx.amount)} ر.ي
+                        ${tx.type === 'debt' ? '+' : ''}${formatAmount(tx.amount)} ${appCurrency}
                     </td>
                     <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">${tx.items || 'بدون تفاصيل'}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: ${tx.type === 'debt' ? '#e11d48' : '#059669'};">
@@ -1563,7 +1642,7 @@
 
                     <div class="total-card">
                         <span class="total-label">إجمالي الديون المتبقية بذمة العميل حالياً:</span>
-                        <span class="total-value">${formatAmount(activeCustomer.debt)} ر.ي</span>
+                        <span class="total-value">${formatAmount(activeCustomer.debt)} ${appCurrency}</span>
                     </div>
 
                     <div class="print-footer">
@@ -1582,4 +1661,5 @@
         });
     </script>
 </body>
+
 </html>
