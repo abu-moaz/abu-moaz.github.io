@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منظومة إدارة الديون الذكية - البقالة</title>
+    
+    <!-- استدعاء خط Cairo الاحترافي من Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- استدعاء مكتبة Supabase JS Client عبر CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- استدعاء مكتبة أيقونات Lucide الرائعة عبر CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* التنسيقات العامة ومتغيرات التصميم - ثيم زجاجي داكن فاخر */
+        :root {
+            --bg-main: #0b0f19;       /* لون الخلفية الأساسي */
+            --bg-card: rgba(19, 27, 46, 0.65); /* بطاقات زجاجية شبه شفافة */
+            --bg-accent: rgba(30, 41, 59, 0.8); /* عناصر تفاعلية */
+            --bg-hover: rgba(51, 65, 85, 0.85); /* تأثير الحوم */
+            --primary: #10b981;       /* الزمردي النشط للمؤشرات الإيجابية والتسديد */
+            --primary-gradient: linear-gradient(135deg, #10b981, #059669);
+            --danger: #f43f5e;        /* الوردي الناري للديون والتنبيهات والحذف */
+            --danger-gradient: linear-gradient(135deg, #f43f5e, #e11d48);
+            --text-main: #f8fafc;     /* لون النصوص الأساسي */
+            --text-muted: #94a3b8;    /* لون النصوص الثانوية */
+            --border-color: rgba(255, 255, 255, 0.08); /* لون الحدود الزجاجية */
+            --glass-effect: blur(20px) saturate(180%);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.4);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #0e172a, #0b0f19 75%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 2rem;
+            overflow-x: hidden;
+        }
+
+        /* تخصيص شريط التمرير */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* شاشة حظر الاتصال عند انقطاع الإنترنت أو فشل السيرفر */
+        .connection-error-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(9, 13, 22, 0.98);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .error-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            box-shadow: 0 8px 32px rgba(244, 63, 94, 0.15);
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            max-width: 550px;
+            width: 90%;
+            text-align: center;
+            backdrop-filter: var(--glass-effect);
+            -webkit-backdrop-filter: var(--glass-effect);
+        }
+
+        .error-icon {
+            font-size: 3rem;
+            color: var(--danger);
+            background: rgba(244, 63, 94, 0.15);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        .error-card h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 1rem;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .error-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* شريط التنقل العلوي */
+        header {
+            background-color: rgba(13, 20, 35, 0.8);
+            backdrop-filter: var(--glass-effect);
+            -webkit-backdrop-filter: var(--glass-effect);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--danger), var(--primary));
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .logo-icon svg {
+            width: 22px;
+            height: 22px;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            display: block;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.3rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 0.25rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-gradient);
+            color: #0b0f19;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-online {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .status-offline {
+            background-color: rgba(244, 63, 94, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(244, 63, 94, 0.25);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .settings-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr auto;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* حاوية المحتوى الرئيسي */
+        main {
+            max-width: 1100px;
+            width: 100%;
+            margin: 1.5rem auto 0 auto;
+            padding: 0 1.2rem;
+            flex-grow: 1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* الكروت والوحدات الأساسية الزجاجية */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-effect);
+            -webkit-backdrop-filter: var(--glass-effect);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 1.5rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.6rem;
+        }
+
+        .card-title svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+        }
+
+        /* أدوات البحث */
+        .search-section {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            background-color: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+        }
+
+        /* قائمة الاقتراحات المنسدلة للبحث */
+        .search-suggestions-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            left: 0;
+            background: #111827;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 200;
+            display: none;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .suggestion-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            transition: var(--transition);
+        }
+
+        .suggestion-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .suggestion-name {
+            font-weight: 800;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .suggestion-details {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .suggestion-debt {
+            font-weight: 800;
+            font-size: 0.9rem;
+            direction: ltr;
+        }
+
+        /* أزرار مخصصة وعصرية */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.4rem;
+            font-size: 0.92rem;
+            font-weight: 800;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: #0b0f19;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.55);
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(244, 63, 94, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(244, 63, 94, 0.5);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-accent);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-whatsapp {
+            background: #25d366;
+            color: #0b0f19;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+        }
+
+        .btn-whatsapp:hover {
+            background: #20ba5a;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
+        }
+
+        /* كارت نتيجة البحث وسجل المعاملات */
+        .search-result-layout {
+            display: none;
+            margin-top: 1rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .customer-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .customer-badge {
+            background-color: var(--bg-accent);
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            border: 1px solid var(--border-color);
+        }
+
+        .customer-summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        @media (max-width: 576px) {
+            .customer-summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-box {
+            background-color: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-box-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            font-weight: 700;
+        }
+
+        .info-box-value {
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+
+        .debt-large-card {
+            grid-column: span 2;
+            padding: 1.2rem;
+            border-radius: 14px;
+            text-align: center;
+            font-size: 1.15rem;
+            font-weight: 800;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        @media (max-width: 576px) {
+            .debt-large-card {
+                grid-column: span 1;
+            }
+        }
+
+        .debt-large-card.has-debt {
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(244, 63, 94, 0.05));
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            color: #fda4af;
+        }
+
+        .debt-large-card.no-debt {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #a7f3d0;
+        }
+
+        .debt-large-amount {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-top: 0.2rem;
+            letter-spacing: -1px;
+            direction: ltr;
+        }
+
+        /* صندوق إضافة الدين أو التسديد */
+        .transaction-form-box {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            padding: 1.2rem;
+            border-radius: 14px;
+            margin-bottom: 1.5rem;
+        }
+
+        .transaction-form-box h4 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .transaction-inputs-grid {
+            display: grid;
+            grid-template-columns: 140px 130px 1fr auto;
+            gap: 0.6rem;
+        }
+
+        @media (max-width: 768px) {
+            .transaction-inputs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* أزرار تعيين المبالغ السريعة */
+        .btn-quick-amount {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.25rem 0.55rem;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .btn-quick-amount:hover {
+            background: var(--bg-hover);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* قائمة سجل العمليات */
+        .history-section h4 {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-main);
+        }
+
+        .history-table-container {
+            max-height: 280px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* الجداول العامة */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: var(--bg-accent);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            font-weight: 800;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            background-color: rgba(19, 27, 46, 0.2);
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* لوحة التحكم والإدارة */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card-title {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+            font-weight: 700;
+        }
+
+        .stat-card-value {
+            font-size: 1.7rem;
+            font-weight: 900;
+            direction: ltr;
+        }
+
+        .stat-card.debt-stat {
+            border-right: 4px solid var(--danger);
+        }
+
+        .stat-card.cust-stat {
+            border-right: 4px solid var(--primary);
+        }
+
+        .stat-card.active-stat {
+            border-right: 4px solid #3b82f6;
+        }
+
+        .admin-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 992px) {
+            .admin-main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .badge-red {
+            background-color: rgba(244, 63, 94, 0.12);
+            color: #f43f5e;
+            border: 1px solid rgba(244, 63, 94, 0.25);
+        }
+
+        .badge-green {
+            background-color: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            padding: 0.3rem;
+            display: inline-flex;
+            align-items: center;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .btn-delete:hover {
+            color: #ff5c77;
+            background-color: rgba(244, 63, 94, 0.1);
+        }
+
+        /* شاشة التحميل/الانتظار */
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 14px;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+            font-size: 1rem;
+            z-index: 5;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3.5px solid rgba(16, 185, 129, 0.25);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* نظام الإشعارات البسيط */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            background-color: rgba(19, 27, 46, 0.95);
+            border-right: 4px solid var(--primary);
+            border-left: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.88rem;
+            font-weight: 700;
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            min-width: 280px;
+            backdrop-filter: var(--glass-effect);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-110%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.error {
+            border-right-color: var(--danger);
+        }
+
+        /* شاشة قفل لوحة التحكم */
+        .lock-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 380px;
+            text-align: center;
+            max-width: 440px;
+            margin: 2rem auto;
+        }
+
+        .lock-card {
+            background-color: var(--bg-card);
+            backdrop-filter: var(--glass-effect);
+            -webkit-backdrop-filter: var(--glass-effect);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .lock-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            background-color: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .lock-icon-wrapper svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .lock-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .lock-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 1.8rem;
+            font-weight: 600;
+        }
+
+        .admin-locked-content {
+            display: none;
+        }
+
+        /* نافذة تعديل بيانات العميل المنبثقة Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-card {
+            background: #131b2e;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-weight: 800;
+            font-size: 1.15rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: rgba(9, 13, 22, 0.45);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.6rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة حظر الاتصال عند انقطاع الإنترنت أو فشل السيرفر -->
+    <div id="connection-error-overlay" class="connection-error-overlay">
+        <div class="error-card">
+            <div class="error-icon">
+                <i data-lucide="wifi-off" style="width: 40px; height: 40px;"></i>
+            </div>
+            <h2>فشل الاتصال بقاعدة البيانات السحابية</h2>
+            <p>تعذر تشغيل المنظومة حالياً لأنها تتطلب اتصالاً مباشراً بقاعدة بيانات Supabase السحابية للعمل بشكل آمن، وقد تم قطع الاتصال أو انقطاع شبكة الإنترنت. يرجى التحقق من اتصالك بالإنترنت ثم إعادة المحاولة.</p>
+            <button class="btn btn-primary" onclick="retryConnection()" style="margin: 0 auto; display: flex; gap: 0.5rem; align-items: center; padding: 0.75rem 1.5rem; font-size: 0.95rem;">
+                <i data-lucide="refresh-cw"></i>
+                إعادة محاولة الاتصال الفوري 🌐
+            </button>
+        </div>
+    </div>
+
+    <!-- شريط التنقل العلوي -->
+    <header>
+        <div class="nav-container">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i data-lucide="scale" style="stroke-width: 2.5px;"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>منظومة ديون البقالة الذكية</h1>
+                    <span>دفتر الديون الموثق المتصل بقاعدة البيانات</span>
+                </div>
+            </div>
+            
+            <div class="nav-controls">
+                <!-- حالة الاتصال البرمجية -->
+                <span id="db-status-badge" class="status-badge status-online">
+                    متصل سحابياً 🌐
+                </span>
+
+                <a href="admin.html" class="tab-btn" style="text-decoration: none; border-radius: var(--radius-md); display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-weight: 700;">
+                    <i data-lucide="lock"></i>
+                    بوابة التاجر 🔐
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي للموقع -->
+    <main>
+        
+        <!-- التبويب الأول: فحص الديون والبيع والتوثيق -->
+        <section id="sales-tab" class="tab-content active">
+            <div class="card" id="sales-card">
+                <!-- شاشة تحميل مؤقتة أثناء استرجاع البيانات -->
+                <div class="loading-overlay" id="sales-loading">
+                    <div class="spinner"></div>
+                    <span>جاري جلب ومعالجة البيانات...</span>
+                </div>
+
+                <div class="card-title">
+                    <i data-lucide="user-search"></i>
+                    البحث الذكي عن العميل
+                </div>
+                
+                <!-- صندوق الاستعلام الآمن للزبون -->
+                <div class="search-section" style="position: relative;">
+                    <div class="input-wrapper" style="display: flex; gap: 0.5rem;">
+                        <div style="position: relative; flex-grow: 1;">
+                            <input type="text" id="search-customer-input" class="form-control" placeholder="أدخل رقم الهوية الفريد (ID) أو رقم الهاتف بدقة للاستعلام..." autocomplete="off">
+                        </div>
+                        <button class="btn btn-primary" onclick="searchCustomerDirect()"><i data-lucide="search"></i> فحص الحساب</button>
+                    </div>
+                </div>
+
+                <!-- حاوية النتيجة عند العثور على العميل -->
+                <div id="search-result-container" class="search-result-layout">
+                    
+                    <div class="customer-header-row">
+                        <div>
+                            <h3 id="res-customer-name" style="font-size: 1.3rem; font-weight: 800;">اسم العميل</h3>
+                            <span class="customer-badge" id="res-customer-id"> المعرف: #1001 </span>
+                        </div>
+                        
+                        <!-- أزرار الإجراءات السريعة -->
+                        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                            <button class="btn btn-secondary" onclick="printCustomerStatement()" style="padding: 0.5rem 0.9rem; font-size: 0.8rem;"><i data-lucide="printer"></i> طباعة كشف الحساب</button>
+                        </div>
+                    </div>
+
+                    <div class="customer-summary-grid">
+                        <div class="info-box">
+                            <div class="info-box-label">رقم الهاتف المسجل</div>
+                            <div class="info-box-value" id="res-customer-phone">-</div>
+                        </div>
+                        <div class="info-box">
+                            <div class="info-box-label">إجمالي العمليات المسجلة</div>
+                            <div class="info-box-value" id="res-customer-tx-count">0</div>
+                        </div>
+                        
+                        <div id="res-debt-card" class="debt-large-card no-debt">
+                            <div class="info-box-label" style="color: inherit; font-weight: 800; margin-bottom: 0.1rem;">الدين الحالي المستحق بذمته</div>
+                            <div class="debt-large-amount"><span id="res-customer-debt">0</span> <span style="font-size: 1rem; font-weight: 700;">ر.ي</span></div>
+                        </div>
+                    </div>
+
+                    <!-- جدول تاريخ العمليات السابقة -->
+                    <div class="history-section">
+                        <h4>
+                            <i data-lucide="history"></i>
+                            سجل العمليات والمنتجات التفصيلي للعميل
+                        </h4>
+                        <div class="history-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 140px;">التاريخ والوقت</th>
+                                        <th style="width: 110px;">القيمة</th>
+                                        <th>البيان / المنتجات المأخوذة</th>
+                                        <th style="width: 100px;">نوع المعاملة</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customer-history-body">
+                                    <!-- يعبأ ديناميكياً -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- الإشعارات المنبثقة السريعة -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        /* ==========================================
+           1. البيانات وحالة الاتصال بـ Supabase
+           ========================================== */
+
+        let customers = [];
+        let activeCustomer = null; 
+        let supabaseClient = null;
+
+        // تنسيق المبالغ المالية بطريقة أنيقة بدون أصفار عشرية زائدة
+        function formatAmount(val) {
+            const num = parseFloat(val);
+            if (isNaN(num)) return '0';
+            if (num % 1 === 0) {
+                return num.toString();
+            }
+            return parseFloat(num.toFixed(2)).toString();
+        }
+
+        // تشغيل وإطلاق الاتصال بـ Supabase
+        async function initSupabase() {
+            const badge = document.getElementById('db-status-badge');
+            const errorOverlay = document.getElementById('connection-error-overlay');
+            
+            if (!navigator.onLine) {
+                handleConnectionError();
+                return;
+            }
+
+            const defaultUrl = "https://sopffpyfkdsgfhwryqks.supabase.co";
+            const defaultKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNvcGZmcHlma2RzZ2Zod3J5cWtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2OTQwMzgsImV4cCI6MjA5NTI3MDAzOH0.01AZtJuwOLAMX3X5OrXm1Q00SgyRox5DZA_omp83rR8";
+
+            if (typeof supabase !== 'undefined') {
+                try {
+                    // إنشاء كائن الاتصال بـ Supabase
+                    supabaseClient = supabase.createClient(defaultUrl, defaultKey);
+                    
+                    // التحقق من عمل الاتصال بطلب بسيط
+                    const { error } = await supabaseClient.from('settings').select('value').eq('key', 'admin_password').maybeSingle();
+                    if (error && error.code !== 'PGRST116') throw error;
+                    
+                    // إخفاء شاشة تعذر الاتصال
+                    if (errorOverlay) errorOverlay.style.display = 'none';
+                    
+                    // تغيير حالة الشارة إلى متصل
+                    if (badge) {
+                        badge.innerText = "متصل سحابياً 🌐";
+                        badge.className = "status-badge status-online";
+                    }
+                } catch (e) {
+                    console.error("Supabase initialization error:", e);
+                    handleConnectionError();
+                }
+            } else {
+                console.error("Supabase library not loaded.");
+                handleConnectionError();
+            }
+            refreshIcons();
+        }
+
+        // التعامل مع شاشة انقطاع الاتصال (حظر الاستخدام)
+        function handleConnectionError() {
+            supabaseClient = null;
+            const badge = document.getElementById('db-status-badge');
+            if (badge) {
+                badge.innerText = "غير متصل ❌";
+                badge.className = "status-badge status-offline";
+            }
+            const errorOverlay = document.getElementById('connection-error-overlay');
+            if (errorOverlay) {
+                errorOverlay.style.display = 'flex';
+            }
+            showToast("تعذر الاتصال بقاعدة البيانات السحابية. تم إيقاف المنظومة مؤقتاً لسلامة البيانات.", "error");
+            refreshIcons();
+        }
+
+        // إعادة محاولة الاتصال
+        async function retryConnection() {
+            showToast("جاري محاولة الاتصال والربط السحابي...");
+            if (navigator.onLine) {
+                await initSupabase();
+                if (supabaseClient) {
+                    showToast("تم الاتصال بـ Supabase بنجاح! 🎉");
+                    
+                    // تحديث الواجهة مباشرة
+                    if (activeCustomer) {
+                        setLoading('sales-loading', true);
+                        activeCustomer.transactions = await fetchCustomerTransactions(activeCustomer.id);
+                        renderActiveCustomerDetails();
+                        setLoading('sales-loading', false);
+                    }
+                }
+            } else {
+                showToast("لا يزال الاتصال بالإنترنت غير متوفر.", "error");
+                handleConnectionError();
+            }
+        }
+
+        /* ==========================================
+           2. جلب وتعديل البيانات
+           ========================================== */
+
+        // شارات التحميل البصرية
+        function setLoading(elementId, isActive) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                if (isActive) el.classList.add('active');
+                else el.classList.remove('active');
+            }
+        }
+
+        // جلب قائمة العملاء
+        async function fetchAllCustomers() {
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('customers')
+                        .select('*')
+                        .order('id', { ascending: true });
+                    
+                    if (error) throw error;
+                    customers = data || [];
+                } catch (e) {
+                    console.error("Supabase error:", e);
+                    handleConnectionError();
+                }
+            } else {
+                customers = [];
+            }
+        }
+
+        // جلب سجل المعاملات لزبون معين
+        async function fetchCustomerTransactions(customerId) {
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('transactions')
+                        .select('*')
+                        .eq('customer_id', customerId)
+                        .order('created_at', { ascending: true });
+                    
+                    if (error) throw error;
+                    
+                    return data.map(tx => ({
+                        id: tx.id,
+                        datetime: formatDBDateTime(tx.created_at),
+                        amount: parseFloat(tx.amount),
+                        type: tx.type,
+                        items: tx.items
+                    }));
+                } catch (e) {
+                    console.error(e);
+                    showToast("تعذر جلب سجل الحركات من السيرفر.", "error");
+                    return [];
+                }
+            } else {
+                const customer = customers.find(c => c.id === customerId);
+                return customer ? (customer.transactions || []) : [];
+            }
+        }
+
+        /* ==========================================
+           3. التبويب والواجهة والوظائف الأساسية
+           ========================================== */
+
+
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+            
+            // إضافة أيقونة مناسبة للإشعار
+            const iconName = type === 'error' ? 'alert-triangle' : 'check-circle2';
+            toast.innerHTML = `<i data-lucide="${iconName}"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function formatDBDateTime(isoString) {
+            if (!isoString) return '';
+            const d = new Date(isoString);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
+
+        function getCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
+
+        function refreshIcons() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        /* ==========================================
+           4. التبويب الأول: البحث الذكي وتسجيل الحركات
+           ========================================== */
+
+        function resetSearch() {
+            document.getElementById('search-customer-input').value = '';
+            document.getElementById('search-result-container').style.display = 'none';
+            document.getElementById('search-suggestions').style.display = 'none';
+            activeCustomer = null;
+        }
+
+        // تم تعطيل الاقتراحات الحية في صفحة الزبون لحماية الخصوصية ومنع تخمين الحسابات
+        async function handleSearchInput(val) {
+            return;
+        }
+
+        function selectSuggestion(id) {
+            return;
+        }
+
+        // الاستعلام الآمن والدقيق عن العميل
+        async function searchCustomerDirect() {
+            const inputVal = document.getElementById('search-customer-input').value.trim();
+            if (!inputVal) {
+                showToast("يرجى إدخال رقم الهوية (ID) أو رقم الهاتف بدقة للاستعلام.", "error");
+                return;
+            }
+
+            setLoading('sales-loading', true);
+            
+            // تحديث القائمة المحلية لضمان قراءة أحدث دين
+            await fetchAllCustomers();
+            
+            // العثور على العميل بالمعرف الدقيق أو برقم الهاتف المطابق تماماً (منع التخمين وحماية الخصوصية)
+            const customer = customers.find(c => 
+                c.id.toString() === inputVal || 
+                c.phone === inputVal
+            );
+
+            if (!customer) {
+                showToast("عذراً، رقم المعرف (ID) أو رقم الهاتف غير مسجل في النظام.", "error");
+                document.getElementById('search-result-container').style.display = 'none';
+                activeCustomer = null;
+                setLoading('sales-loading', false);
+                return;
+            }
+
+            activeCustomer = customer;
+            
+            // جلب سجل المعاملات التاريخية
+            activeCustomer.transactions = await fetchCustomerTransactions(customer.id);
+
+            renderActiveCustomerDetails();
+            setLoading('sales-loading', false);
+        }
+
+        // عرض تفاصيل الزبون النشط في الشاشة
+        function renderActiveCustomerDetails() {
+            if (!activeCustomer) return;
+
+            document.getElementById('res-customer-name').innerText = activeCustomer.name;
+            document.getElementById('res-customer-id').innerText = `المعرف الفريد: #${activeCustomer.id}`;
+            document.getElementById('res-customer-phone').innerText = activeCustomer.phone;
+            document.getElementById('res-customer-tx-count').innerText = activeCustomer.transactions ? activeCustomer.transactions.length : 0;
+            
+            const debt = parseFloat(activeCustomer.debt);
+            document.getElementById('res-customer-debt').innerText = formatAmount(debt);
+
+            const debtCard = document.getElementById('res-debt-card');
+            if (debt > 0) {
+                debtCard.className = "debt-large-card has-debt";
+            } else {
+                debtCard.className = "debt-large-card no-debt";
+            }
+
+            renderCustomerHistory();
+
+            document.getElementById('search-result-container').style.display = 'block';
+            refreshIcons();
+        }
+
+        // عرض تاريخ المعاملات
+        function renderCustomerHistory() {
+            const tbody = document.getElementById('customer-history-body');
+            tbody.innerHTML = '';
+
+            const txs = activeCustomer.transactions || [];
+            if (txs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); font-weight: 700;">لا توجد حركات حسابية سابقة مسجلة.</td></tr>`;
+                return;
+            }
+
+            [...txs].reverse().forEach(tx => {
+                const tr = document.createElement('tr');
+                const typeText = tx.type === 'debt' ? 'إضافة دين' : 'تسديد دين';
+                const typeColor = tx.type === 'debt' ? 'var(--danger)' : 'var(--primary)';
+                const amountSign = tx.type === 'debt' ? '+' : '';
+
+                tr.innerHTML = `
+                    <td style="color: var(--text-muted); font-size: 0.8rem; direction: ltr; text-align: right;">${tx.datetime}</td>
+                    <td style="font-weight: 800; color: ${typeColor}; direction: ltr; text-align: left;">${amountSign}${formatAmount(tx.amount)} ر.ي</td>
+                    <td style="font-weight: 700;">${tx.items || 'بدون تفاصيل'}</td>
+                    <td style="color: ${typeColor}; font-weight: 800;">${typeText}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            refreshIcons();
+        }
+
+
+
+        // طباعة كشف حساب تفصيلي للعميل في نافذة منفصلة منسقة
+        function printCustomerStatement() {
+            if (!activeCustomer) return;
+            
+            const printWindow = window.open('', '_blank');
+            const txRows = (activeCustomer.transactions || []).map(tx => `
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px; font-weight: 500; direction: ltr; text-align: right;">${tx.datetime}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: ${tx.type === 'debt' ? '#e11d48' : '#059669'}; text-align: left;">
+                        ${tx.type === 'debt' ? '+' : ''}${formatAmount(tx.amount)} ر.ي
+                    </td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">${tx.items || 'بدون تفاصيل'}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: ${tx.type === 'debt' ? '#e11d48' : '#059669'};">
+                        ${tx.type === 'debt' ? 'دين' : 'تسديد'}
+                    </td>
+                </tr>
+            `).reverse().join('');
+
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="ar" dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>كشف حساب ديون - ${activeCustomer.name}</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'Cairo', sans-serif; padding: 30px; color: #1e293b; background: #fff; line-height: 1.6; }
+                        .print-header { text-align: center; border-bottom: 3px double #0f172a; padding-bottom: 15px; margin-bottom: 25px; }
+                        .shop-logo { font-size: 22px; font-weight: 900; color: #0f172a; }
+                        .doc-title { font-size: 16px; font-weight: 700; color: #64748b; margin-top: 5px; }
+                        .customer-profile { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 30px; }
+                        .profile-item { font-size: 14px; font-weight: 600; }
+                        .profile-label { color: #64748b; font-weight: bold; }
+                        table { width: 100%; border-collapse: collapse; text-align: right; }
+                        th { background-color: #f1f5f9; padding: 12px; border-bottom: 2px solid #cbd5e1; font-weight: bold; font-size: 14px; }
+                        td { font-size: 13px; }
+                        .total-card { margin-top: 30px; background: #fff1f2; border: 1px solid #fecdd3; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+                        .total-label { font-size: 16px; font-weight: 800; color: #9f1239; }
+                        .total-value { font-size: 26px; font-weight: 900; color: #e11d48; direction: ltr; }
+                        .print-footer { text-align: center; margin-top: 50px; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+                        @media print {
+                            .btn-trigger-print { display: none; }
+                            body { padding: 0; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-header">
+                        <div class="shop-logo">منظومة ديون البقالة الذكية</div>
+                        <div class="doc-title">كشف تفصيلي بحركات الحساب والديون المتراكمة</div>
+                    </div>
+
+                    <div class="customer-profile">
+                        <div class="profile-item"><span class="profile-label">اسم العميل:</span> ${activeCustomer.name}</div>
+                        <div class="profile-item"><span class="profile-label">رقم معرف العميل:</span> #${activeCustomer.id}</div>
+                        <div class="profile-item"><span class="profile-label">رقم الهاتف:</span> ${activeCustomer.phone}</div>
+                        <div class="profile-item"><span class="profile-label">تاريخ الكشف:</span> ${getCurrentDateTime()}</div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 160px;">التاريخ والوقت</th>
+                                <th style="width: 120px;">القيمة</th>
+                                <th>البيان / المنتجات المأخوذة</th>
+                                <th style="width: 100px;">نوع المعاملة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${txRows.length > 0 ? txRows : '<tr><td colspan="4" style="text-align: center; padding: 20px; color: #94a3b8;">لا توجد أي معاملات سابقة مسجلة للعميل.</td></tr>'}
+                        </tbody>
+                    </table>
+
+                    <div class="total-card">
+                        <span class="total-label">إجمالي الديون المتبقية بذمة العميل حالياً:</span>
+                        <span class="total-value">${formatAmount(activeCustomer.debt)} ر.ي</span>
+                    </div>
+
+                    <div class="print-footer">
+                        <p>وثيقة إلكترونية رسمية صادرة وموثقة سحابياً.</p>
+                        <button class="btn-trigger-print" onclick="window.print()" style="margin-top: 15px; padding: 8px 20px; background: #0f172a; color: #fff; border: none; border-radius: 6px; font-weight: bold; font-family: 'Cairo'; cursor: pointer; font-size: 13px;">طباعة الكشف الفوري 🖨️</button>
+                    </div>
+                <\/body>
+                <\/html>
+            `);
+            printWindow.document.close();
+        }
+
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initSupabase();
+        });
+    </script>
+</body>
+</html>
